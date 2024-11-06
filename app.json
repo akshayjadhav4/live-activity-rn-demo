@@ -13,13 +13,16 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.liveactivityrn",
+      "deploymentTarget": "17.2"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.liveactivityrn"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +30,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "liveactivityrn"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

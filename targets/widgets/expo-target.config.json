@@ -1,0 +1,10 @@
+{
+  "type": "widget",
+  "name": "Order Tracking Live Activity",
+  "colors": {
+    "$accent": { "color": "#ffdbd1", "darkColor": "#ffb5a0" }
+  },
+  "icon": "../../assets/images/icon.png",
+  "frameworks": ["SwiftUI", "ActivityKit"],
+  "deploymentTarget": "17.2"
+}
