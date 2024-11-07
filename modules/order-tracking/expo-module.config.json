@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "tvos", "android", "web"],
+  "ios": {
+    "modules": ["OrderTrackingModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.ordertracking.OrderTrackingModule"]
+  }
+}
