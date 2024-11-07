@@ -1,5 +1,6 @@
 import {
   EndActivityParams,
+  PackageStatus,
   StartActivityParams,
   UpdateActivityParams,
 } from "./src/OrderTracking.types";
@@ -31,3 +32,5 @@ export function endActivity(options: EndActivityParams) {
     options.estimatedDeliveryTime
   );
 }
+
+export { PackageStatus };
