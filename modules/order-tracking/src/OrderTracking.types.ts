@@ -17,4 +17,4 @@ export interface UpdateActivityParams {
   estimatedDeliveryTime: number;
 }
 
-export interface StopActivityParams extends UpdateActivityParams {}
+export interface EndActivityParams extends UpdateActivityParams {}

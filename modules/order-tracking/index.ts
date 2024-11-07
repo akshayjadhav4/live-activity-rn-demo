@@ -1,4 +1,8 @@
-import { StartActivityParams } from "./src/OrderTracking.types";
+import {
+  EndActivityParams,
+  StartActivityParams,
+  UpdateActivityParams,
+} from "./src/OrderTracking.types";
 import OrderTrackingModule from "./src/OrderTrackingModule";
 
 export function areActivitiesEnabled(): boolean {
@@ -14,14 +18,14 @@ export function startActivity(options: StartActivityParams): boolean {
   );
 }
 
-export function updateActivity(options: StartActivityParams) {
+export function updateActivity(options: UpdateActivityParams) {
   OrderTrackingModule.updateActivity(
     options.packageStatus,
     options.estimatedDeliveryTime
   );
 }
 
-export function endActivity(options: StartActivityParams) {
+export function endActivity(options: EndActivityParams) {
   return OrderTrackingModule.endActivity(
     options.packageStatus,
     options.estimatedDeliveryTime
