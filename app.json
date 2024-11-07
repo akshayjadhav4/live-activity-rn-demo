@@ -15,7 +15,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.liveactivityrn",
-      "deploymentTarget": "17.2"
+      "deploymentTarget": "17.2",
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
     },
     "android": {
       "adaptiveIcon": {
