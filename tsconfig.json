@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "local:*": ["./modules/*"]
     }
   },
   "include": [
