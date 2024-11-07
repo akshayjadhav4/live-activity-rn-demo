@@ -1,7 +1,20 @@
-export type ChangeEventPayload = {
-  value: string;
-};
+export enum PackageStatus {
+  Shipped = "Shipped",
+  InTransit = "In Transit",
+  OutForDelivery = "Out for Delivery",
+  Delivered = "Delivered",
+}
 
-export type OrderTrackingViewProps = {
-  name: string;
-};
+export interface StartActivityParams {
+  trackingNumber: string;
+  carrierName: string;
+  packageStatus: PackageStatus;
+  estimatedDeliveryTime: number;
+}
+
+export interface UpdateActivityParams {
+  packageStatus: PackageStatus;
+  estimatedDeliveryTime: number;
+}
+
+export interface StopActivityParams extends UpdateActivityParams {}

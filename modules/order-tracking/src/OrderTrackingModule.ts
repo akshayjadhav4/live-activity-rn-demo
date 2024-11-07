@@ -1,5 +1,18 @@
-import { requireNativeModule } from 'expo-modules-core';
+import { PackageStatus } from "./OrderTracking.types";
 
-// It loads the native module object from the JSI or falls back to
-// the bridge module (from NativeModulesProxy) if the remote debugger is on.
-export default requireNativeModule('OrderTracking');
+export default {
+  areActivitiesEnabled: () => false,
+  startActivity(
+    trackingNumber: string,
+    carrierName: string,
+    packageStatus: PackageStatus,
+    estimatedDeliveryTime: number
+  ) {
+    return false;
+  },
+  updateActivity(
+    packageStatus: PackageStatus,
+    estimatedDeliveryTime: number
+  ) {},
+  endActivity(packageStatus: PackageStatus, estimatedDeliveryTime: number) {},
+};
