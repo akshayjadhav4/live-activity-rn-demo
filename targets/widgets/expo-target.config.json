@@ -2,7 +2,11 @@
   "type": "widget",
   "name": "Order Tracking Live Activity",
   "colors": {
-    "$accent": { "color": "#ffdbd1", "darkColor": "#ffb5a0" }
+    "completedState": "#FFA500",
+    "activeState": "#007AFF",
+    "incompleteState": "#99AAAB",
+    "primaryText": "#FFFFFF",
+    "secondaryText": "#EAF0F1"
   },
   "icon": "../../assets/images/icon.png",
   "frameworks": ["SwiftUI", "ActivityKit"],
