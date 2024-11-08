@@ -16,7 +16,7 @@ struct OrderTrackingActivityAttributes: ActivityAttributes {
       }
 
       // Enum to represent different package statuses
-      enum PackageStatus: String, Codable, Hashable {
+      enum PackageStatus: String, Codable, Hashable, CaseIterable {
           case shipped = "Shipped"
           case inTransit = "In Transit"
           case outForDelivery = "Out for Delivery"
