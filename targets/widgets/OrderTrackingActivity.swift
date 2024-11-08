@@ -10,162 +10,168 @@ import ActivityKit
 import SwiftUI
 import WidgetKit
 
+enum StatusState {
+  case completed
+  case active
+  case incomplete
+}
+
 private func symbolForStatus(_ status: OrderTrackingActivityAttributes.PackageStatus) -> String {
-    switch status {
-    case .shipped:
-        return "shippingbox"
-    case .inTransit:
-        return "arrow.right"
-    case .outForDelivery:
-        return "car"
-    case .delivered:
-        return "house.fill"
+  switch status {
+  case .shipped:
+    return "shippingbox"
+  case .inTransit:
+    return "arrow.right"
+  case .outForDelivery:
+    return "car"
+  case .delivered:
+    return "house.fill"
+  }
+}
+
+struct ProgressStepView: View {
+  let currentStatus: OrderTrackingActivityAttributes.PackageStatus
+  
+  var body: some View {
+    HStack(spacing: 10) {
+      ForEach(OrderTrackingActivityAttributes.PackageStatus.allCases, id: \.self) { status in
+        let state = calculateState(for: status, currentStatus: currentStatus) // Calculate state for each status
+        
+          Image(systemName: symbolForStatus(status))
+            .font(.subheadline)
+            .foregroundColor(iconColor(for: state))
+          
+          if status != .delivered {
+            ProgressView(value: progressValue(for: state))
+              .progressViewStyle(LinearProgressViewStyle(tint: progressColor(for: state)))
+              .frame(height: 4)
+          }
+      }
     }
+    .padding(.vertical)
+  }
+  
+  // Helper function to calculate state based on current status
+  private func calculateState(for status: OrderTrackingActivityAttributes.PackageStatus, currentStatus: OrderTrackingActivityAttributes.PackageStatus) -> StatusState {
+    let currentStatusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: currentStatus) ?? 0
+    let statusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: status) ?? 0
+    if statusIndex == currentStatusIndex {
+      return .active
+    } else if statusIndex < currentStatusIndex {
+      return .completed
+    } else {
+      return .incomplete
+    }
+  }
+  
+  // Colors based on progress state
+  private func iconColor(for state: StatusState) -> Color {
+    switch state {
+    case .completed: return Color("completedState")
+    case .active: return Color("activeState")
+    case .incomplete: return Color("incompleteState")
+    }
+  }
+  
+  private func progressColor(for state: StatusState) -> Color {
+    switch state {
+    case .completed: return Color("completedState")
+    case .active: return Color("activeState")
+    case .incomplete: return Color("incompleteState")
+    }
+  }
+  
+  
+  private func progressValue(for state: StatusState) -> Double {
+    switch state {
+    case .completed: return 1.0
+    case .active: return 0.5
+    case .incomplete: return 0.0
+    }
+  }
 }
 
 struct TrackingProgressView: View {
-    let context: ActivityViewContext<OrderTrackingActivityAttributes>
-    
-    var body: some View {
-      VStack(alignment: .leading) {
-          Text("Tracking Number: \(context.attributes.trackingNumber)")
-                .font(.headline)
-                .foregroundColor(.white)
-            
-            Text(context.attributes.carrierName)
-                .font(.subheadline)
-                .foregroundColor(.white.opacity(0.7))
-            
-          HStack(spacing: 10) {
-                          ForEach(OrderTrackingActivityAttributes.PackageStatus.allCases, id: \.self) { status in
-                              VStack {
-                                Image(systemName: status.iconName)
-                                                            .font(.subheadline)
-                                                            .foregroundColor(color(for: status))
-                              }
-                              if status != .delivered {
-                                  ProgressView(value: progressValue(for: status))
-                                      .progressViewStyle(LinearProgressViewStyle(tint: color(for: status)))
-                                      .frame(height: 4)
-                              }
-                          }
-                      }
-          .padding(.vertical)
-          Text(context.state.packageStatus.rawValue)
-              .font(.caption)
-              .foregroundColor(.green)
-        }
-        .padding()
-        .activityBackgroundTint(Color.black.opacity(0.5))
+  let context: ActivityViewContext<OrderTrackingActivityAttributes>
+  
+  var body: some View {
+    VStack(alignment: .leading) {
+      Text("Tracking Number: \(context.attributes.trackingNumber)")
+        .font(.headline)
+        .foregroundColor(Color("primaryText"))
+      
+      Text(context.attributes.carrierName)
+        .font(.subheadline)
+        .foregroundColor(Color("secondaryText"))
+      
+      ProgressStepView(currentStatus: context.state.packageStatus)
+      Text(context.state.packageStatus.rawValue)
+        .font(.caption)
+        .foregroundColor(Color("primaryText"))
     }
-  
-  // Determine color based on the status
-      private func color(for status: OrderTrackingActivityAttributes.PackageStatus) -> Color {
-          let currentStatusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: context.state.packageStatus) ?? 0
-          let statusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: status) ?? 0
-          
-          if statusIndex < currentStatusIndex {
-              return .green // Completed
-          } else if statusIndex == currentStatusIndex {
-              return .blue // Active
-          } else {
-              return .gray // Incomplete
-          }
-      }
-  
-  // Calculate progress value for each status based on completion level
-      private func progressValue(for status: OrderTrackingActivityAttributes.PackageStatus) -> Double {
-          let currentStatusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: context.state.packageStatus) ?? 0
-          let statusIndex = OrderTrackingActivityAttributes.PackageStatus.allCases.firstIndex(of: status) ?? 0
-
-          if statusIndex < currentStatusIndex {
-              return 1.0 // Completed (fully filled)
-          } else if statusIndex == currentStatusIndex {
-              return 0.5 // Active (half-filled)
-          } else {
-              return 0.0 // Incomplete (empty)
-          }
-      }
+    .padding()
+    .activityBackgroundTint(Color.black.opacity(0.5))
+  }
 }
 
 struct OrderTrackingLiveActivity: Widget {
-    var body: some WidgetConfiguration {
-        ActivityConfiguration(for: OrderTrackingActivityAttributes.self) { context in
-            // Lock Screen
-          TrackingProgressView(context: context)
-        } dynamicIsland: { context in
-            DynamicIsland {
-                // Expanded view in Dynamic Island
-              DynamicIslandExpandedRegion(.leading) {
-                Image(systemName: symbolForStatus(context.state.packageStatus))
-                  .font(.title)
-                  .foregroundColor(.green)
-              }
-                DynamicIslandExpandedRegion(.center) {
-                    VStack {
-                        Text(context.attributes.trackingNumber)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                }
-              DynamicIslandExpandedRegion(.bottom) {
-                Text(context.state.packageStatus.rawValue)
-                      .font(.title)
-                      .foregroundColor(.white)
-              }
-              
-              
-            } compactLeading: {
-              Text(context.state.packageStatus.rawValue)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-            } compactTrailing: {
-              Image(systemName: symbolForStatus(context.state.packageStatus))
-                .foregroundColor(.green)
-            } minimal: {
-              Image(systemName: symbolForStatus(context.state.packageStatus))
-                .foregroundColor(.green)
-            }
+  var body: some WidgetConfiguration {
+    ActivityConfiguration(for: OrderTrackingActivityAttributes.self) { context in
+      // Lock Screen
+      TrackingProgressView(context: context)
+    } dynamicIsland: { context in
+      DynamicIsland {
+        // Expanded view in Dynamic Island
+        DynamicIslandExpandedRegion(.center) {
+          VStack {
+            Text(context.attributes.trackingNumber)
+              .font(.subheadline)
+              .foregroundColor(.gray)
+          }
         }
+        DynamicIslandExpandedRegion(.bottom) {
+          ProgressStepView(currentStatus: context.state.packageStatus)
+        }
+        
+        
+      } compactLeading: {
+        Text(context.state.packageStatus.rawValue)
+          .font(.subheadline)
+          .foregroundColor(Color("primaryText"))
+      } compactTrailing: {
+        Image(systemName: symbolForStatus(context.state.packageStatus))
+          .foregroundColor(Color("completedState"))
+      } minimal: {
+        Image(systemName: symbolForStatus(context.state.packageStatus))
+          .foregroundColor(Color("completedState"))
+      }
     }
+  }
 }
 
-
-
-extension OrderTrackingActivityAttributes.PackageStatus {
-    // Associate icons with each status using SF Symbols
-    var iconName: String {
-        switch self {
-        case .shipped: return "shippingbox.fill"
-        case .inTransit: return "arrow.right"
-        case .outForDelivery: return "car.fill"
-        case .delivered: return "house.fill"
-        }
-    }
-}
 
 extension OrderTrackingActivityAttributes {
   fileprivate static var preview: OrderTrackingActivityAttributes {
-      OrderTrackingActivityAttributes(trackingNumber: "1Z9999", carrierName: "Fast Shipping Co.")
-    }
+    OrderTrackingActivityAttributes(trackingNumber: "1Z9999", carrierName: "Fast Shipping Co.")
+  }
 }
 
 extension OrderTrackingActivityAttributes.ContentState {
   fileprivate static var shipped: OrderTrackingActivityAttributes.ContentState {
-      OrderTrackingActivityAttributes.ContentState(packageStatus: .shipped, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 5))
-    }
-    
+    OrderTrackingActivityAttributes.ContentState(packageStatus: .shipped, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 5))
+  }
+  
   fileprivate static var inTransit: OrderTrackingActivityAttributes.ContentState {
-      OrderTrackingActivityAttributes.ContentState(packageStatus: .inTransit, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 3))
-    }
-    
+    OrderTrackingActivityAttributes.ContentState(packageStatus: .inTransit, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 3))
+  }
+  
   fileprivate static var outForDelivery: OrderTrackingActivityAttributes.ContentState {
-      OrderTrackingActivityAttributes.ContentState(packageStatus: .outForDelivery, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 1))
-    }
-    
+    OrderTrackingActivityAttributes.ContentState(packageStatus: .outForDelivery, estimatedDeliveryTime: Date().addingTimeInterval(3600 * 1))
+  }
+  
   fileprivate static var delivered: OrderTrackingActivityAttributes.ContentState {
-      OrderTrackingActivityAttributes.ContentState(packageStatus: .delivered, estimatedDeliveryTime: nil)
-    }
+    OrderTrackingActivityAttributes.ContentState(packageStatus: .delivered, estimatedDeliveryTime: nil)
+  }
 }
 
 
@@ -173,7 +179,7 @@ extension OrderTrackingActivityAttributes.ContentState {
   OrderTrackingLiveActivity() // Main view for the widget
 } contentStates: {
   OrderTrackingActivityAttributes.ContentState.shipped
-//  OrderTrackingActivityAttributes.ContentState.inTransit
-//  OrderTrackingActivityAttributes.ContentState.outForDelivery
-//  OrderTrackingActivityAttributes.ContentState.delivered
+  //  OrderTrackingActivityAttributes.ContentState.inTransit
+  //  OrderTrackingActivityAttributes.ContentState.outForDelivery
+  //  OrderTrackingActivityAttributes.ContentState.delivered
 }
