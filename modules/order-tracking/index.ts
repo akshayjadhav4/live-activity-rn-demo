@@ -11,6 +11,10 @@ export function areActivitiesEnabled(): boolean {
   return OrderTrackingModule.areActivitiesEnabled();
 }
 
+export function isActivityInProgress(): boolean {
+  return OrderTrackingModule.isActivityInProgress();
+}
+
 export function startActivity(options: StartActivityParams): boolean {
   return OrderTrackingModule.startActivity(
     options.trackingNumber,

@@ -3,6 +3,7 @@ import { EventEmitter } from "expo-modules-core";
 
 export default {
   areActivitiesEnabled: () => false,
+  isActivityInProgress: () => false,
   startActivity(
     trackingNumber: string,
     carrierName: string,

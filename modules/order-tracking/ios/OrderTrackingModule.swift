@@ -17,6 +17,17 @@ public class OrderTrackingModule: Module {
             }
         }
         
+        Function("isActivityInProgress") { () -> Bool in
+            if #available(iOS 16.2, *) {
+                let currentActivities = Activity<OrderTrackingActivityAttributes>.activities
+                
+                // Check if any activity is in progress
+                return !currentActivities.isEmpty
+            } else {
+                return false
+            }
+        }
+        
         Function("startActivity") { (trackingNumber: String, carrierName: String, packageStatus: OrderTrackingActivityAttributes.PackageStatus, estimatedDeliveryTime: UInt64) -> Bool in
             if #available(iOS 16.2, *) {
                 let attributes = OrderTrackingActivityAttributes(

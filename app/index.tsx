@@ -6,12 +6,15 @@ import {
   updateActivity,
   PackageStatus,
   addOrderCancelEventListener,
+  isActivityInProgress,
 } from "local:order-tracking";
 import { useEffect, useState } from "react";
 export default function Index() {
   const [currentStatus, setCurrentStatus] = useState<PackageStatus>(
     PackageStatus.Shipped
   );
+  const [isActivityInProgressState, setIsActivityInProgressState] =
+    useState<boolean>(isActivityInProgress());
 
   function updateStatus(_currentStatus: string) {
     switch (_currentStatus) {
@@ -36,6 +39,7 @@ export default function Index() {
           estimatedDeliveryTime: Math.floor(Date.now() / 1000),
         });
         setCurrentStatus(PackageStatus.Delivered);
+        setIsActivityInProgressState(false);
         break;
       default:
         setCurrentStatus(PackageStatus.Delivered);
@@ -52,6 +56,7 @@ export default function Index() {
             estimatedDeliveryTime: Math.floor(Date.now() / 1000),
           });
           setCurrentStatus(PackageStatus.Cancelled);
+          setIsActivityInProgressState(false);
         }
       }
     );
@@ -68,24 +73,28 @@ export default function Index() {
     >
       <Text>iOS Live Activity</Text>
 
-      <Button
-        title="Start"
-        onPress={() => {
-          if (areActivitiesEnabled()) {
-            setCurrentStatus(PackageStatus.Shipped);
-            startActivity({
-              carrierName: "Fast Shipping Co.",
-              trackingNumber: "1Z9999",
-              packageStatus: PackageStatus.Shipped,
-              estimatedDeliveryTime: Math.floor(Date.now() / 1000),
-            });
-          }
-        }}
-      />
-      <Button
-        title={`Update PackageStatus`}
-        onPress={() => updateStatus(currentStatus)}
-      />
+      {isActivityInProgressState ? (
+        <Button
+          title={`Update PackageStatus`}
+          onPress={() => updateStatus(currentStatus)}
+        />
+      ) : (
+        <Button
+          title="Start"
+          onPress={() => {
+            if (areActivitiesEnabled()) {
+              setCurrentStatus(PackageStatus.Shipped);
+              setIsActivityInProgressState(true);
+              startActivity({
+                carrierName: "Fast Shipping Co.",
+                trackingNumber: "1Z9999",
+                packageStatus: PackageStatus.Shipped,
+                estimatedDeliveryTime: Math.floor(Date.now() / 1000),
+              });
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
