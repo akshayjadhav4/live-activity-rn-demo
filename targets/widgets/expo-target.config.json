@@ -9,6 +9,6 @@
     "secondaryText": "#EAF0F1"
   },
   "icon": "../../assets/images/icon.png",
-  "frameworks": ["SwiftUI", "ActivityKit"],
+  "frameworks": ["SwiftUI", "ActivityKit", "AppIntents"],
   "deploymentTarget": "17.2"
 }

@@ -1,3 +1,8 @@
-import { requireNativeModule } from "expo-modules-core";
+import { EventEmitter, requireNativeModule } from "expo-modules-core";
 
-export default requireNativeModule("OrderTracking");
+const ExpoSettingsModule = requireNativeModule("OrderTracking");
+
+const emitter = new EventEmitter(ExpoSettingsModule);
+export default ExpoSettingsModule;
+
+export { emitter };

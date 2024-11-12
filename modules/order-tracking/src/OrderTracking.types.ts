@@ -3,6 +3,7 @@ export enum PackageStatus {
   InTransit = "In Transit",
   OutForDelivery = "Out for Delivery",
   Delivered = "Delivered",
+  Cancelled = "Cancelled",
 }
 
 export interface StartActivityParams {

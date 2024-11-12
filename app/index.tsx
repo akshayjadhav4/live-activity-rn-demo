@@ -5,8 +5,9 @@ import {
   startActivity,
   updateActivity,
   PackageStatus,
+  addOrderCancelEventListener,
 } from "local:order-tracking";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function Index() {
   const [currentStatus, setCurrentStatus] = useState<PackageStatus>(
     PackageStatus.Shipped
@@ -41,6 +42,22 @@ export default function Index() {
         break;
     }
   }
+
+  useEffect(() => {
+    const subscription = addOrderCancelEventListener(
+      ({ status: newStatus }) => {
+        if (newStatus === PackageStatus.Cancelled) {
+          endActivity({
+            packageStatus: PackageStatus.Cancelled,
+            estimatedDeliveryTime: Math.floor(Date.now() / 1000),
+          });
+          setCurrentStatus(PackageStatus.Cancelled);
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
   return (
     <View
       style={{

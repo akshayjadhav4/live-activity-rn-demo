@@ -21,6 +21,7 @@ struct OrderTrackingActivityAttributes: ActivityAttributes {
           case inTransit = "In Transit"
           case outForDelivery = "Out for Delivery"
           case delivered = "Delivered"
+          case cancelled = "Cancelled"
       }
       
       // Attributes that do not change over the activity's lifecycle

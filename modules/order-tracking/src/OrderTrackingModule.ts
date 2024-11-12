@@ -1,4 +1,5 @@
 import { PackageStatus } from "./OrderTracking.types";
+import { EventEmitter } from "expo-modules-core";
 
 export default {
   areActivitiesEnabled: () => false,
@@ -16,3 +17,6 @@ export default {
   ) {},
   endActivity(packageStatus: PackageStatus, estimatedDeliveryTime: number) {},
 };
+
+const emitter = {} as EventEmitter;
+export { emitter };

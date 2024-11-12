@@ -26,6 +26,8 @@ private func symbolForStatus(_ status: OrderTrackingActivityAttributes.PackageSt
     return "car"
   case .delivered:
     return "house.fill"
+  case .cancelled:
+    return "xmark.circle"
   }
 }
 
@@ -37,15 +39,17 @@ struct ProgressStepView: View {
       ForEach(OrderTrackingActivityAttributes.PackageStatus.allCases, id: \.self) { status in
         let state = calculateState(for: status, currentStatus: currentStatus) // Calculate state for each status
         
+        if status != .cancelled {
           Image(systemName: symbolForStatus(status))
             .font(.subheadline)
             .foregroundColor(iconColor(for: state))
-          
-          if status != .delivered {
-            ProgressView(value: progressValue(for: state))
-              .progressViewStyle(LinearProgressViewStyle(tint: progressColor(for: state)))
-              .frame(height: 4)
-          }
+        }
+        
+        if status != .delivered && status != .cancelled {
+          ProgressView(value: progressValue(for: state))
+            .progressViewStyle(LinearProgressViewStyle(tint: progressColor(for: state)))
+            .frame(height: 4)
+        }
       }
     }
     .padding(.vertical)
@@ -95,22 +99,36 @@ struct TrackingProgressView: View {
   let context: ActivityViewContext<OrderTrackingActivityAttributes>
   
   var body: some View {
-    VStack(alignment: .leading) {
-      Text("Tracking Number: \(context.attributes.trackingNumber)")
-        .font(.headline)
-        .foregroundColor(Color("primaryText"))
-      
-      Text(context.attributes.carrierName)
-        .font(.subheadline)
-        .foregroundColor(Color("secondaryText"))
-      
-      ProgressStepView(currentStatus: context.state.packageStatus)
-      Text(context.state.packageStatus.rawValue)
-        .font(.caption)
-        .foregroundColor(Color("primaryText"))
+    if context.state.packageStatus == OrderTrackingActivityAttributes.PackageStatus.cancelled {
+      VStack(alignment: .leading) {
+        Text("Order Cancelled.")
+          .font(.headline)
+          .foregroundColor(Color("primaryText"))
+        
+        Text("Tracking Number: \(context.attributes.trackingNumber)")
+          .font(.subheadline)
+          .foregroundColor(Color("secondaryText"))
+      }
+      .padding()
+      .activityBackgroundTint(Color.black.opacity(0.5))
+    } else {
+      VStack(alignment: .leading) {
+        Text("Tracking Number: \(context.attributes.trackingNumber)")
+          .font(.headline)
+          .foregroundColor(Color("primaryText"))
+        
+        Text(context.attributes.carrierName)
+          .font(.subheadline)
+          .foregroundColor(Color("secondaryText"))
+        
+        ProgressStepView(currentStatus: context.state.packageStatus)
+        Text(context.state.packageStatus.rawValue)
+          .font(.caption)
+          .foregroundColor(Color("primaryText"))
+      }
+      .padding()
+      .activityBackgroundTint(Color.black.opacity(0.5))
     }
-    .padding()
-    .activityBackgroundTint(Color.black.opacity(0.5))
   }
 }
 
@@ -121,6 +139,16 @@ struct OrderTrackingLiveActivity: Widget {
       TrackingProgressView(context: context)
     } dynamicIsland: { context in
       DynamicIsland {
+        
+        DynamicIslandExpandedRegion(.leading) {
+          if #available(iOS 17.0, *) {
+            Button(intent: CancelOrderIntent()) {
+              Image(systemName: "xmark.circle")
+                .foregroundColor(.red)
+            }
+          }
+        }
+        
         // Expanded view in Dynamic Island
         DynamicIslandExpandedRegion(.center) {
           VStack {

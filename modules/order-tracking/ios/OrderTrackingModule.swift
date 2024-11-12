@@ -1,11 +1,13 @@
 import ExpoModulesCore
 import ActivityKit
-
+import os.log
 public class OrderTrackingModule: Module {
     
     public func definition() -> ModuleDefinition {
         
         Name("OrderTracking")
+        
+        Events("onOrderCancelEvent")
         
         Function("areActivitiesEnabled") { () -> Bool in
             if #available(iOS 16.2, *) {
@@ -28,7 +30,7 @@ public class OrderTrackingModule: Module {
                 let activityContent = ActivityContent(state: contentState, staleDate: nil)
                 do {
                     let activity = try Activity.request(attributes: attributes, content: activityContent)
-                    
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.onOrderCancelEvent), name: Notification.Name("onOrderCancelEvent"), object: nil)
                     return true
                 } catch (let error) {
                     
@@ -68,11 +70,20 @@ public class OrderTrackingModule: Module {
                 
                 Task {
                     for activity in Activity<OrderTrackingActivityAttributes>.activities {
-                        await activity.end(finalContent, dismissalPolicy: .immediate)
+                        await activity.end(finalContent, dismissalPolicy: .default)
                     }
                 }
+                NotificationCenter.default.removeObserver(self, name: Notification.Name("onOrderCancelEvent"), object: nil)
             }
         }
-
     }
+    
+    @objc
+    func onOrderCancelEvent() {
+        os_log("onOrderCancelEvent", log: OSLog.default, type: .info)
+        sendEvent("onOrderCancelEvent", [
+            "status": OrderTrackingActivityAttributes.PackageStatus.cancelled.rawValue
+        ])
+    }
+    
 }
