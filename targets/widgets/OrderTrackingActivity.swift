@@ -100,17 +100,20 @@ struct TrackingProgressView: View {
   
   var body: some View {
     if context.state.packageStatus == OrderTrackingActivityAttributes.PackageStatus.cancelled {
-      VStack(alignment: .leading) {
-        Text("Order Cancelled.")
-          .font(.headline)
-          .foregroundColor(Color("primaryText"))
-        
-        Text("Tracking Number: \(context.attributes.trackingNumber)")
-          .font(.subheadline)
-          .foregroundColor(Color("secondaryText"))
+      HStack(alignment: .top) {
+        VStack(alignment: .leading) {
+          Text("Order Cancelled.")
+            .font(.headline)
+            .foregroundColor(Color("primaryText"))
+          
+          Text("Tracking Number: \(context.attributes.trackingNumber)")
+            .font(.subheadline)
+            .foregroundColor(Color("secondaryText"))
+        }
+        .padding()
+        .activityBackgroundTint(Color.black.opacity(0.5))
+        Spacer()
       }
-      .padding()
-      .activityBackgroundTint(Color.black.opacity(0.5))
     } else {
       VStack(alignment: .leading) {
         Text("Tracking Number: \(context.attributes.trackingNumber)")

@@ -9,6 +9,7 @@ import Foundation
 import AppIntents
 import os.log
 
+// Select Target both App and Widget to LiveActivityIntent work
 
 @available(iOS 17.0, *)
 public struct CancelOrderIntent: LiveActivityIntent {
