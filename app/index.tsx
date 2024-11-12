@@ -72,6 +72,7 @@ export default function Index() {
         title="Start"
         onPress={() => {
           if (areActivitiesEnabled()) {
+            setCurrentStatus(PackageStatus.Shipped);
             startActivity({
               carrierName: "Fast Shipping Co.",
               trackingNumber: "1Z9999",
