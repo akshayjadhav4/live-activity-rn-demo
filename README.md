@@ -1,50 +1,110 @@
-# Welcome to your Expo app 👋
+# iOS Live Activity Order Tracking
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This project is a sample React Native (Expo) app demonstrating the use of Live Activities for tracking the status of an order. Built [expo-apple-targets](https://github.com/EvanBacon/expo-apple-targets) integrated with a React Native project through a [Expo modules](https://docs.expo.dev/modules/overview/), it showcases order status updates directly on the Lock Screen and within the Dynamic Island (for iPhone models that support it). The app includes a Live Activity widget that displays order progress and provides options for user interaction, such as cancelling an order.
 
-## Get started
+## Table of Contents
+- [iOS Live Activity Order Tracking](#ios-live-activity-order-tracking)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation and Usage](#installation-and-usage)
+  - [Usage](#usage)
+  - [Project Structure](#project-structure)
+    - [Live Activity Widget Target](#live-activity-widget-target)
+    - [Native Module to control LiveActivity](#native-module-to-control-liveactivity)
+  - [Demo](#demo)
 
-1. Install dependencies
 
+
+## Features
+- **Order Tracking with Live Activity**: View updates on order status, such as *Shipped*, *In Transit*, *Out for Delivery*, and *Delivered*.
+- **Dynamic Island Integration**: For supported devices, the Live Activity is visible in the Dynamic Island, providing at-a-glance tracking and quick actions.
+- **User Interaction with Live ActivityIntent**: Allows users to cancel an order directly from the widget, triggering updates within the React Native app.
+- **expo-apple-targets Integration**: Expo Config Plugin that generates native Apple Targets like *Widgets* or *App Clips*, and links them outside the `/ios` directory
+
+
+## Installation and Usage
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/akshayjadhav4/live-activity-rn-demo.git
+   cd live-activity-rn
+   ```
+
+2. **Install CocoaPods dependencies**:
    ```bash
    npm install
    ```
-
-2. Start the app
-
+3. **Generate iOS project**:
    ```bash
-    npx expo start
+   npx expo prebuild --platform ios --no-install
    ```
 
-In the output, you'll find options to open the app in a
+## Usage
+1. **Run the App**:
+   ```bash
+   npm run ios
+   ```
+2. **Trigger the Live Activity**:
+   - Once App is open press `Start` which will start actvity.
+3. **Interacting with the Activity**:
+   - **LiveActivityIntent** runs the in the app’s process so custom app intent need to be added to app target.
+   - **Manual App Target Configuration**: For this project once iOS project is build manually check the checkbox for App Target for file `targets/widgets/OrderTrackingLiveActivityIntent.swift` by opening Xcode.
+   ![App-Target-Intent](./demo/App-Target-Intent.png)
+   - **CNG Workflow**: For [CNG workflow](https://docs.expo.dev/workflow/continuous-native-generation/) this [patch](https://gist.github.com/jpudysz/e6525502af75bf63c548e097d1d2274b) can be added to `expo-apple-targets` which during build will add App target to *.pbxproj*. 
+   - **Testing**:
+     - View the activity in the Lock Screen or Dynamic Island on supported devices.
+     - In expanded Dynamic Island view use the *Cancel Order* button to test the `LiveActivityIntent` functionality.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
+### Live Activity Widget Target
 
 ```bash
-npm run reset-project
+.
+└── widgets
+    ├── Assets.xcassets  # assets will be linked as resources of the target
+    ├── Attributes.swift # describe data that Live Activity displays (ActivityAttributes)
+    ├── Info.plist
+    ├── OrderTrackingActivity.swift # LiveActivity widget code and UI setup
+    ├── OrderTrackingLiveActivityIntent.swift # LiveActivityIntent handling
+    ├── PrivacyInfo.xcprivacy
+    ├── expo-target.config.json # config to generate LiveActivity Widget
+    └── index.swift # Main widget
+
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Native Module to control LiveActivity
 
-## Learn more
+```bash
+.
+└── order-tracking
+    ├── android
+    ├── expo-module.config.json
+    ├── index.ts # expose JavaScript functions to control LiveActivity 
+    ├── ios
+    │   ├── Attributes.swift # copy of ActivityAttributes same as target
+    │   ├── OrderTracking.podspec
+    │   ├── OrderTrackingModule.swift # iOS implementation to manage LiveActivity
+    │   └── OrderTrackingView.swift 
+    └── src
+        ├── OrderTracking.types.ts # TypeScript types and interfaces for the module 
+        ├── OrderTrackingModule.ios.ts # Exposes the native module to the JavaScript side
+        └── OrderTrackingModule.ts # placeholder implementation of native module for other platforms
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Demo
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+<div style="display: flex; justify-content: center; gap: 10px;">
+  <img src="./demo/1demo.png" alt="Dynamic Island" width="45%">
+  <img src="./demo/2demo.png" alt="Local Screen" width="45%">
+</div>
 
-## Join the community
+<div style="display: flex; justify-content: center; gap: 10px; margin-top:10px">
+  <img src="./demo/3demo.png" alt="Expanded Dynamic Island" width="45%">
+  <img src="./demo/4demo.png" alt="Expanded Dynamic Island Status Update" width="45%">
+</div>
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<div style="display: flex; justify-content: center; gap: 10px; margin-top:10px">
+  <img src="./demo/5demo.png" alt="Local Screen Status Update" width="45%">
+  <img src="./demo/6demo.png" alt="Order Cancelled" width="45%">
+</div>
