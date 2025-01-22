@@ -3,7 +3,7 @@
 This project is a sample React Native (Expo) app demonstrating the use of Live Activities for tracking the status of an order. Built [expo-apple-targets](https://github.com/EvanBacon/expo-apple-targets) integrated with a React Native project through a [Expo modules](https://docs.expo.dev/modules/overview/), it showcases order status updates directly on the Lock Screen and within the Dynamic Island (for iPhone models that support it). The app includes a Live Activity widget that displays order progress and provides options for user interaction, such as cancelling an order.
 
 ## Table of Contents
-- [iOS Live Activity Order Tracking](#ios-live-activity-order-tracking)
+- [iOS Live Activity React Native](#ios-live-activity-react-native)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Installation and Usage](#installation-and-usage)
@@ -12,6 +12,8 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
     - [Live Activity Widget Target](#live-activity-widget-target)
     - [Native Module to control LiveActivity](#native-module-to-control-liveactivity)
   - [Demo](#demo)
+    - [Dynamic Island \& Local Screen](#dynamic-island--local-screen)
+    - [Standby Mode](#standby-mode)
 
 
 
@@ -94,6 +96,7 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
 
 ## Demo
 
+### Dynamic Island & Local Screen
 <div style="display: flex; justify-content: center; gap: 10px;">
   <img src="./demo/1demo.png" alt="Dynamic Island" width="45%">
   <img src="./demo/2demo.png" alt="Local Screen" width="45%">
@@ -108,3 +111,6 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
   <img src="./demo/5demo.png" alt="Local Screen Status Update" width="45%">
   <img src="./demo/6demo.png" alt="Order Cancelled" width="45%">
 </div>
+
+### Standby Mode
+<img src="./demo/StandBy.png" alt="StandBy" width="50%">
