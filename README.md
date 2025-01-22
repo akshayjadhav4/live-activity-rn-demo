@@ -1,4 +1,4 @@
-# iOS Live Activity Order Tracking
+# iOS Live Activity React Native
 
 This project is a sample React Native (Expo) app demonstrating the use of Live Activities for tracking the status of an order. Built [expo-apple-targets](https://github.com/EvanBacon/expo-apple-targets) integrated with a React Native project through a [Expo modules](https://docs.expo.dev/modules/overview/), it showcases order status updates directly on the Lock Screen and within the Dynamic Island (for iPhone models that support it). The app includes a Live Activity widget that displays order progress and provides options for user interaction, such as cancelling an order.
 
