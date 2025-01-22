@@ -47,10 +47,8 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
    - Once App is open press `Start` which will start actvity.
 3. **Interacting with the Activity**:
    - **LiveActivityIntent** runs the in the app’s process so custom app intent need to be added to app target.
-   - **Manual App Target Configuration**: For this project once iOS project is build manually check the checkbox for App Target for file `targets/widgets/OrderTrackingLiveActivityIntent.swift` by opening Xcode.
-   ![App-Target-Intent](./demo/App-Target-Intent.png)
-   - **CNG Workflow**: For [CNG workflow](https://docs.expo.dev/workflow/continuous-native-generation/) this [patch](https://gist.github.com/jpudysz/e6525502af75bf63c548e097d1d2274b) can be added to `expo-apple-targets` which during build will add App target to *.pbxproj*. 
-   - **Testing**:
+   - Struct extending `LiveActivityIntent` put inside `_shared` folder. Plugin will add this file in Main app target as well. 
+4. **Testing**:
      - View the activity in the Lock Screen or Dynamic Island on supported devices.
      - In expanded Dynamic Island view use the *Cancel Order* button to test the `LiveActivityIntent` functionality.
 
@@ -64,9 +62,10 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
 └── widgets
     ├── Assets.xcassets  # assets will be linked as resources of the target
     ├── Attributes.swift # describe data that Live Activity displays (ActivityAttributes)
+    ├── _shared
+        ├── OrderTrackingLiveActivityIntent.swift # LiveActivityIntent handling
     ├── Info.plist
     ├── OrderTrackingActivity.swift # LiveActivity widget code and UI setup
-    ├── OrderTrackingLiveActivityIntent.swift # LiveActivityIntent handling
     ├── PrivacyInfo.xcprivacy
     ├── expo-target.config.json # config to generate LiveActivity Widget
     └── index.swift # Main widget
