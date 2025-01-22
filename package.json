@@ -15,7 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@bacons/apple-targets": "^0.0.9",
+    "@bacons/apple-targets": "^0.1.17",
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
     "expo": "^52.0.27",
