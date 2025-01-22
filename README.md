@@ -48,6 +48,7 @@ This project is a sample React Native (Expo) app demonstrating the use of Live A
 3. **Interacting with the Activity**:
    - **LiveActivityIntent** runs the in the app’s process so custom app intent need to be added to app target.
    - Struct extending `LiveActivityIntent` put inside `_shared` folder. Plugin will add this file in Main app target as well. 
+   ![App-Target-Intent](./demo/App-Target-Intent.png)
 4. **Testing**:
      - View the activity in the Lock Screen or Dynamic Island on supported devices.
      - In expanded Dynamic Island view use the *Cancel Order* button to test the `LiveActivityIntent` functionality.
